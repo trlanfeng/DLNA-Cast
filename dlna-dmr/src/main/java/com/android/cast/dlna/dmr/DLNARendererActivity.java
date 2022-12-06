@@ -124,18 +124,36 @@ public class DLNARendererActivity extends AppCompatActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         boolean handled = super.onKeyDown(keyCode, event);
-        if (mRendererService != null) {
-            if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP || keyCode == KeyEvent.KEYCODE_VOLUME_MUTE) {
-                int volume = ((AudioManager) getApplication().getSystemService(Context.AUDIO_SERVICE)).getStreamVolume(AudioManager.STREAM_MUSIC);
-                notifyRenderVolumeChanged(volume);
-            } else if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-                if (mVideoView != null && mVideoView.isPlaying()) {
-                    mVideoView.pause();
-                    notifyTransportStateChanged(TransportState.PAUSED_PLAYBACK);
-                } else if (mVideoView != null) {
-                    mVideoView.resume();
-                    notifyTransportStateChanged(TransportState.PLAYING);
-                }
+        if (mRendererService != null && mVideoView != null) {
+//            if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP || keyCode == KeyEvent.KEYCODE_VOLUME_MUTE) {
+//                int volume = ((AudioManager) getApplication().getSystemService(Context.AUDIO_SERVICE)).getStreamVolume(AudioManager.STREAM_MUSIC);
+//                notifyRenderVolumeChanged(volume);
+//            } else if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
+//                if (mVideoView != null && mVideoView.isPlaying()) {
+//                    mVideoView.pause();
+//                    notifyTransportStateChanged(TransportState.PAUSED_PLAYBACK);
+//                } else if (mVideoView != null) {
+//                    mVideoView.resume();
+//                    notifyTransportStateChanged(TransportState.PLAYING);
+//                }
+//            }
+            // 处理遥控器
+            int curPosition = mVideoView.getCurrentPosition();
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_DPAD_CENTER:
+                    if (mVideoView.isPlaying()) {
+                        mVideoView.pause();
+                    } else {
+                        mVideoView.start();
+                    }
+                    break;
+                case KeyEvent.KEYCODE_DPAD_LEFT:
+                    mVideoView.seekTo(Math.max(0, curPosition - 15000));
+                    break;
+                case KeyEvent.KEYCODE_DPAD_RIGHT:
+                    int duration = mVideoView.getDuration();
+                    mVideoView.seekTo(Math.min(curPosition + 15000, duration));
+                    break;
             }
         }
         return handled;
