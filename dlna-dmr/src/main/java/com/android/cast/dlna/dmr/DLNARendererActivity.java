@@ -5,11 +5,13 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Point;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -61,9 +63,17 @@ public class DLNARendererActivity extends AppCompatActivity {
         }
     };
 
+    private int toastOffsetX = 0;
+    private int toastOffsetY = 0;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Display display = getWindowManager().getDefaultDisplay();
+        Point point = new Point();
+        display.getSize(point);
+        toastOffsetX = (int) (point.x * 0.2);
+        toastOffsetY = (int) (point.y * 0.15);
         setContentView(R.layout.activity_dlna_renderer);
         mVideoView = findViewById(R.id.video_view);
         mProgressBar = findViewById(R.id.video_progress);
@@ -177,7 +187,7 @@ public class DLNARendererActivity extends AppCompatActivity {
                     String targetString = timeToString(targetPosition);
                     String toastString = targetString + " / " + totalString;
                     Toast toast = Toast.makeText(getApplicationContext(), toastString, Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.RIGHT | Gravity.BOTTOM, 0, 0);
+                    toast.setGravity(Gravity.RIGHT | Gravity.BOTTOM, toastOffsetX, toastOffsetY);
                     toast.show();
                     break;
                 }
@@ -187,7 +197,7 @@ public class DLNARendererActivity extends AppCompatActivity {
                     String targetString = timeToString(targetPosition);
                     String toastString = targetString + " / " + totalString;
                     Toast toast = Toast.makeText(getApplicationContext(), toastString, Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.RIGHT | Gravity.BOTTOM, 0, 0);
+                    toast.setGravity(Gravity.RIGHT | Gravity.BOTTOM, toastOffsetX, toastOffsetY);
                     toast.show();
                     break;
                 }
@@ -197,7 +207,7 @@ public class DLNARendererActivity extends AppCompatActivity {
                     String targetString = timeToString(targetPosition);
                     String toastString = targetString + " / " + totalString;
                     Toast toast = Toast.makeText(getApplicationContext(), toastString, Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.RIGHT | Gravity.BOTTOM, 0, 0);
+                    toast.setGravity(Gravity.RIGHT | Gravity.BOTTOM, toastOffsetX, toastOffsetY);
                     toast.show();
                     break;
                 }
@@ -207,7 +217,7 @@ public class DLNARendererActivity extends AppCompatActivity {
                     String targetString = timeToString(targetPosition);
                     String toastString = targetString + " / " + totalString;
                     Toast toast = Toast.makeText(getApplicationContext(), toastString, Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.RIGHT | Gravity.BOTTOM, 0, 0);
+                    toast.setGravity(Gravity.RIGHT | Gravity.BOTTOM, toastOffsetX, toastOffsetY);
                     toast.show();
                     break;
                 }
