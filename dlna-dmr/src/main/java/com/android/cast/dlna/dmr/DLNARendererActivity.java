@@ -10,6 +10,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -121,6 +122,26 @@ public class DLNARendererActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    public String timeToString(int duration) {
+        if (duration <= 0) return "00:00";
+        String ss = "";
+        String ms = "";
+        int d = duration / 1000;
+        int s = d % 60;
+        int m = (d - s) / 60;
+        if (s < 10) {
+            ss = "0" + s;
+        } else {
+            ss = String.valueOf(s);
+        }
+        if (m < 10) {
+            ms = "0" + m;
+        } else {
+            ms = String.valueOf(m);
+        }
+        return ms + ":" + ss;
+    }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         boolean handled = super.onKeyDown(keyCode, event);
@@ -139,6 +160,9 @@ public class DLNARendererActivity extends AppCompatActivity {
 //            }
             // 处理遥控器
             int curPosition = mVideoView.getCurrentPosition();
+            int targetPosition = curPosition;
+            int duration = mVideoView.getDuration();
+            String totalString = timeToString(duration);
             switch (keyCode) {
                 case KeyEvent.KEYCODE_DPAD_CENTER:
                     if (mVideoView.isPlaying()) {
@@ -147,13 +171,46 @@ public class DLNARendererActivity extends AppCompatActivity {
                         mVideoView.start();
                     }
                     break;
-                case KeyEvent.KEYCODE_DPAD_LEFT:
-                    mVideoView.seekTo(Math.max(0, curPosition - 15000));
+                case KeyEvent.KEYCODE_DPAD_LEFT: {
+                    targetPosition = Math.max(0, curPosition - 15000);
+                    mVideoView.seekTo(targetPosition);
+                    String targetString = timeToString(targetPosition);
+                    String toastString = targetString + " / " + totalString;
+                    Toast toast = Toast.makeText(getApplicationContext(), toastString, Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.RIGHT | Gravity.BOTTOM, 0, 0);
+                    toast.show();
                     break;
-                case KeyEvent.KEYCODE_DPAD_RIGHT:
-                    int duration = mVideoView.getDuration();
-                    mVideoView.seekTo(Math.min(curPosition + 15000, duration));
+                }
+                case KeyEvent.KEYCODE_DPAD_RIGHT: {
+                    targetPosition = Math.min(curPosition + 15000, duration);
+                    mVideoView.seekTo(targetPosition);
+                    String targetString = timeToString(targetPosition);
+                    String toastString = targetString + " / " + totalString;
+                    Toast toast = Toast.makeText(getApplicationContext(), toastString, Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.RIGHT | Gravity.BOTTOM, 0, 0);
+                    toast.show();
                     break;
+                }
+                case KeyEvent.KEYCODE_DPAD_UP: {
+                    targetPosition = Math.max(0, curPosition - 180000);
+                    mVideoView.seekTo(targetPosition);
+                    String targetString = timeToString(targetPosition);
+                    String toastString = targetString + " / " + totalString;
+                    Toast toast = Toast.makeText(getApplicationContext(), toastString, Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.RIGHT | Gravity.BOTTOM, 0, 0);
+                    toast.show();
+                    break;
+                }
+                case KeyEvent.KEYCODE_DPAD_DOWN: {
+                    targetPosition = Math.min(curPosition + 180000, duration);
+                    mVideoView.seekTo(targetPosition);
+                    String targetString = timeToString(targetPosition);
+                    String toastString = targetString + " / " + totalString;
+                    Toast toast = Toast.makeText(getApplicationContext(), toastString, Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.RIGHT | Gravity.BOTTOM, 0, 0);
+                    toast.show();
+                    break;
+                }
             }
         }
         return handled;
